@@ -37,6 +37,10 @@ class Q_QUICK_EXPORT QQuickHandlerPoint {
     Q_PROPERTY(QVector2D velocity READ velocity FINAL)
     Q_PROPERTY(qreal rotation READ rotation FINAL)
     Q_PROPERTY(qreal pressure READ pressure FINAL)
+    Q_PROPERTY(qreal tangentialPressure READ tangentialPressure FINAL)
+    Q_PROPERTY(qreal xTilt READ xTilt FINAL)
+    Q_PROPERTY(qreal yTilt READ yTilt FINAL)
+    Q_PROPERTY(qreal z READ z FINAL)
     Q_PROPERTY(QSizeF ellipseDiameters READ ellipseDiameters FINAL)
     Q_PROPERTY(QPointingDevice *device READ device FINAL)
     QML_ANONYMOUS
@@ -55,6 +59,10 @@ public:
     QVector2D velocity() const { return m_velocity; }
     qreal rotation() const { return m_rotation; }
     qreal pressure() const { return m_pressure; }
+    qreal tangentialPressure() const { return m_tangentialPressure; }
+    qreal xTilt() const { return m_xTilt; }
+    qreal yTilt() const { return m_yTilt; }
+    qreal z() const { return m_z; }
     QSizeF ellipseDiameters() const { return m_ellipseDiameters; }
     QPointingDeviceUniqueId uniqueId() const { return m_uniqueId; }
     // non-const only because of QML engine limitations (similar to QTBUG-61749)
@@ -79,6 +87,10 @@ private:
     QVector2D m_velocity;
     qreal m_rotation = 0;
     qreal m_pressure = 0;
+    qreal m_tangentialPressure = 0;
+    qreal m_xTilt = 0;
+    qreal m_yTilt = 0;
+    qreal m_z = 0;
     QSizeF m_ellipseDiameters;
     friend class QQuickMultiPointHandler;
     friend class QQuickSinglePointHandler;

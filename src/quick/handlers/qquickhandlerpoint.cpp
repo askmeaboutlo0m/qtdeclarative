@@ -58,6 +58,10 @@ void QQuickHandlerPoint::reset()
     m_velocity = QVector2D();
     m_rotation = 0;
     m_pressure = 0;
+    m_tangentialPressure = 0;
+    m_xTilt = 0;
+    m_yTilt = 0;
+    m_z = 0;
     m_ellipseDiameters = QSizeF();
     m_pressedButtons = Qt::NoButton;
     m_pressedModifiers = Qt::NoModifier;
@@ -80,18 +84,30 @@ void QQuickHandlerPoint::reset(const QPointerEvent *event, const QEventPoint &po
         m_uniqueId = point.uniqueId();
         m_rotation = point.rotation();
         m_pressure = point.pressure();
+        m_tangentialPressure = 0;
+        m_xTilt = 0;
+        m_yTilt = 0;
+        m_z = 0;
         m_ellipseDiameters = point.ellipseDiameters();
 #if QT_CONFIG(tabletevent)
     } else if (QQuickDeliveryAgentPrivate::isTabletEvent(event)) {
         m_uniqueId = event->pointingDevice()->uniqueId();
         m_rotation = point.rotation();
         m_pressure = point.pressure();
+        m_tangentialPressure = point.tangentialPressure();
+        m_xTilt = point.xTilt();
+        m_yTilt = point.yTilt();
+        m_z = point.z();
         m_ellipseDiameters = QSizeF();
 #endif
     } else {
         m_uniqueId = event->pointingDevice()->uniqueId();
         m_rotation = 0;
         m_pressure = m_pressedButtons ? 1 : 0;
+        m_tangentialPressure = 0;
+        m_xTilt = 0;
+        m_yTilt = 0;
+        m_z = 0;
         m_ellipseDiameters = QSizeF();
     }
     m_position = point.position();
@@ -141,6 +157,11 @@ void QQuickHandlerPoint::reset(const QList<QQuickHandlerPoint> &points)
     m_rotation = 0; // averaging the rotations of all the points isn't very sensible
     m_pressure = pressureSum / points.size();
     m_ellipseDiameters = ellipseDiameterSum / points.size();
+    // These only exist on single-point tablet events, so not applicable here.
+    m_tangentialPressure = 0;
+    m_xTilt = 0;
+    m_yTilt = 0;
+    m_z = 0;
 }
 
 /*!
@@ -282,6 +303,51 @@ void QQuickHandlerPoint::reset(const QList<QQuickHandlerPoint> &points)
 
     It is valid only with certain tablets and touchscreens that can measure
     pressure. Otherwise, it will be zero.
+*/
+
+/*!
+    \readonly
+    \qmlproperty real QtQuick::handlerPoint::tangentialPressure
+
+    This property holds the tangential pressure of e.g. a finger wheel on an
+    airbrush stylus.
+
+    It is valid only with certain tablet devices that measure tangential
+    pressure. Otherwise, it will be zero.
+*/
+
+/*!
+    \readonly
+    \qmlproperty real QtQuick::handlerPoint::xTilt
+
+    This property holds the angle between the device (e.g. a stylus) and the
+    surface in degrees along the x axis. Positive values are towards the right.
+    The angle range is from -60 to +60 degrees.
+
+    It is valid only with certain styluses that measure tilt. Otherwise, it
+    will be zero.
+*/
+
+/*!
+    \readonly
+    \qmlproperty real QtQuick::handlerPoint::yTilt
+
+    This property holds the angle between the device (e.g. a stylus) and the
+    surface in degrees along the y axis. Positive values are towards the bottom.
+    The angle range is from -60 to +60 degrees.
+
+    It is valid only with certain styluses that measure tilt. Otherwise, it
+    will be zero.
+*/
+
+/*!
+    \readonly
+    \qmlproperty real QtQuick::handlerPoint::z
+
+    This property holds the z position of e.g. a wheel on a 4D mouse.
+
+    It is valid only with certain tablet or CAD devices that measure the z
+    position. Otherwise, it will be zero. This is \b not the same as pressure.
 */
 
 /*!
